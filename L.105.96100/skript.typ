@@ -261,4 +261,80 @@ Seien $A,B,C$ Aussagen. Dann gilt
   $not (A => B) <=> A and not B$,
 )
 
+=== Definition
+Sei $M$ eine Menge, und für jedes $x in M$ sei $A(x)$ eine Aussage.
+#enum(
+  numbering: "(i)",
+  ["$forall x in M: A(x)$" bedeutet: "Für jedes $x$ in $M$ gilt $A(x)$." (Allquantor)],
+  ["$exists x in M: A(x)$" bedeutet: "Es existiert mindestens ein $x$ in $M$, sodass $A(x)$ gilt." (Existenzquantor)],
+)
 
+=== Bemerkung (Verneinung von Quantoren)
+#enum(
+  numbering: "(a)",
+  $not (forall x in M: A(x)) <=> exists x in M: not A(x)$,
+  $not (exists x in M: A(x)) <=> forall x in M: not A(x)$,
+)
+
+== Abbildungen
+=== Definition
+Seien $X,Y$ zwei Mengen. Eine Abbildung $f: X -> Y$ ist ein Vorschrift, die jedem $x in X$ genau ein $f(x) in Y$ zuordnet:
+$x |-> f(x)$. $x$ heißt Definitionsbereich und $Y$ Wertebereich von $f$.
+#figure(
+  cetz.canvas({
+    import cetz.draw: *
+    // TODO: write function to automate this
+    circle((0, 0), radius: (0.5, 1), name: "x")
+    circle((0.1, 0.5), name: "x_0", fill: black, radius: 0.05)
+    circle((-0.2, 0.2), name: "x_1", fill: black, radius: 0.05)
+    circle((0.2, -0.1), name: "x_2", fill: black, radius: 0.05)
+    circle((-0.1, -0.4), name: "x_3", fill: black, radius: 0.05)
+    circle((0.1, -0.6), name: "x_4", fill: black, radius: 0.05)
+    content("x.north", $X$, anchor: "south", padding: 0.1, name: "x_label")
+
+    circle((2, 0), radius: (0.5, 1), name: "y")
+    circle((2.1, 0.5), name: "y_0", fill: black, radius: 0.05)
+    circle((1.8, 0.2), name: "y_1", fill: black, radius: 0.05)
+    circle((2.2, -0.1), name: "y_2", fill: black, radius: 0.05)
+    circle((1.9, -0.4), name: "y_3", fill: black, radius: 0.05)
+    circle((2.1, -0.6), name: "y_4", fill: black, radius: 0.05)
+    content("y.north", $Y$, anchor: "south", padding: 0.1, name: "y_label")
+
+    line("x_label", "y_label", mark: (end: "straight"), name: "xy_arrow")
+    content("xy_arrow", $f$, anchor: "south", padding: 0.1)
+    line("x_0", "y_0", mark: (end: "straight"))
+    line("x_1", "y_0", mark: (end: "straight"))
+    line("x_2", "y_1", mark: (end: "straight"))
+    line("x_3", "y_1", mark: (end: "straight"))
+    line("x_4", "y_3", mark: (end: "straight"))
+    content("xy_arrow", [Abbildung], anchor: "south", padding: 1)
+
+    /*
+    circle((0, 0), radius: (0.5, 1), name: "x")
+    circle((0.1, 0.5), name: "x_0", fill: black, radius: 0.05)
+    circle((-0.2, 0.2), name: "x_1", fill: black, radius: 0.05)
+    circle((0.2, -0.1), name: "x_2", fill: black, radius: 0.05)
+    circle((-0.1, -0.4), name: "x_3", fill: black, radius: 0.05)
+    circle((0.1, -0.6), name: "x_4", fill: black, radius: 0.05)
+    content("x.north", $X$, anchor: "south", padding: 0.1, name: "x_label")
+
+    circle((2, 0), radius: (0.5, 1), name: "y")
+    circle((2.1, 0.5), name: "y_0", fill: black, radius: 0.05)
+    circle((1.8, 0.2), name: "y_1", fill: black, radius: 0.05)
+    circle((2.2, -0.1), name: "y_2", fill: black, radius: 0.05)
+    circle((1.9, -0.4), name: "y_3", fill: black, radius: 0.05)
+    circle((2.1, -0.6), name: "y_4", fill: black, radius: 0.05)
+    content("y.north", $Y$, anchor: "south", padding: 0.1, name: "y_label")
+
+    line("x_label", "y_label", mark: (end: "straight"), name: "xy_arrow")
+    content("xy_arrow", $f$, anchor: "south", padding: 0.1)
+    line("x_0", "y_0", mark: (end: "straight"))
+    line("x_1", "y_0", mark: (end: "straight"))
+    line("x_2", "y_1", mark: (end: "straight"))
+    line("x_3", "y_1", mark: (end: "straight"))
+    line("x_4", "y_3", mark: (end: "straight"))
+    content("xy_arrow", [Abbildung], anchor: "south", padding: 1)
+    */
+  }),
+  caption: [Abbildungen],
+)
