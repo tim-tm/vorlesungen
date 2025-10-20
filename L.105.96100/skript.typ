@@ -1,5 +1,6 @@
-#import "@preview/cetz:0.4.0"
+#import "@preview/cetz:0.4.2"
 #import "@preview/cetz-venn:0.1.4"
+#import "@preview/cetz-plot:0.1.3"
 
 #set text(lang: "de")
 #set heading(numbering: "1.")
@@ -283,58 +284,402 @@ $x |-> f(x)$. $x$ heißt Definitionsbereich und $Y$ Wertebereich von $f$.
 #figure(
   cetz.canvas({
     import cetz.draw: *
-    // TODO: write function to automate this
-    circle((0, 0), radius: (0.5, 1), name: "x")
-    circle((0.1, 0.5), name: "x_0", fill: black, radius: 0.05)
-    circle((-0.2, 0.2), name: "x_1", fill: black, radius: 0.05)
-    circle((0.2, -0.1), name: "x_2", fill: black, radius: 0.05)
-    circle((-0.1, -0.4), name: "x_3", fill: black, radius: 0.05)
-    circle((0.1, -0.6), name: "x_4", fill: black, radius: 0.05)
-    content("x.north", $X$, anchor: "south", padding: 0.1, name: "x_label")
+    let vec2_add(vec1, vec2) = {
+      assert(type(vec1) == array and type(vec2) == array)
+      return (vec1.at(0) + vec2.at(0), vec1.at(1) + vec2.at(1))
+    }
 
-    circle((2, 0), radius: (0.5, 1), name: "y")
-    circle((2.1, 0.5), name: "y_0", fill: black, radius: 0.05)
-    circle((1.8, 0.2), name: "y_1", fill: black, radius: 0.05)
-    circle((2.2, -0.1), name: "y_2", fill: black, radius: 0.05)
-    circle((1.9, -0.4), name: "y_3", fill: black, radius: 0.05)
-    circle((2.1, -0.6), name: "y_4", fill: black, radius: 0.05)
-    content("y.north", $Y$, anchor: "south", padding: 0.1, name: "y_label")
+    // TODO: improve this rather nasty function
+    let abbildung(
+      origin: (0, 0),
+      connections: ((0, 0), (1, 0), (2, 1), (3, 1), (4, 3)),
+      name: "",
+      label: [Abbildung],
+    ) = {
+      circle(origin, radius: (0.5, 1), name: name + "_x")
+      circle(vec2_add(origin, (0.1, 0.5)), name: name + "_x_0", fill: black, radius: 0.05)
+      circle(vec2_add(origin, (-0.2, 0.2)), name: name + "_x_1", fill: black, radius: 0.05)
+      circle(vec2_add(origin, (0.2, -0.1)), name: name + "_x_2", fill: black, radius: 0.05)
+      circle(vec2_add(origin, (-0.1, -0.4)), name: name + "_x_3", fill: black, radius: 0.05)
+      circle(vec2_add(origin, (0.1, -0.6)), name: name + "_x_4", fill: black, radius: 0.05)
+      content(name + "_x.north", $X$, anchor: "south", padding: 0.1, name: name + "_x_label")
 
-    line("x_label", "y_label", mark: (end: "straight"), name: "xy_arrow")
-    content("xy_arrow", $f$, anchor: "south", padding: 0.1)
-    line("x_0", "y_0", mark: (end: "straight"))
-    line("x_1", "y_0", mark: (end: "straight"))
-    line("x_2", "y_1", mark: (end: "straight"))
-    line("x_3", "y_1", mark: (end: "straight"))
-    line("x_4", "y_3", mark: (end: "straight"))
-    content("xy_arrow", [Abbildung], anchor: "south", padding: 1)
+      let y_origin = vec2_add(origin, (2, 0))
+      circle(y_origin, radius: (0.5, 1), name: name + "_y")
+      circle(vec2_add(y_origin, (0.1, 0.5)), name: name + "_y_0", fill: black, radius: 0.05)
+      circle(vec2_add(y_origin, (-0.2, 0.2)), name: name + "_y_1", fill: black, radius: 0.05)
+      circle(vec2_add(y_origin, (0.2, -0.1)), name: name + "_y_2", fill: black, radius: 0.05)
+      circle(vec2_add(y_origin, (-0.1, -0.4)), name: name + "_y_3", fill: black, radius: 0.05)
+      circle(vec2_add(y_origin, (0.1, -0.6)), name: name + "_y_4", fill: black, radius: 0.05)
+      content(name + "_y.north", $Y$, anchor: "south", padding: 0.1, name: name + "_y_label")
 
-    /*
-    circle((0, 0), radius: (0.5, 1), name: "x")
-    circle((0.1, 0.5), name: "x_0", fill: black, radius: 0.05)
-    circle((-0.2, 0.2), name: "x_1", fill: black, radius: 0.05)
-    circle((0.2, -0.1), name: "x_2", fill: black, radius: 0.05)
-    circle((-0.1, -0.4), name: "x_3", fill: black, radius: 0.05)
-    circle((0.1, -0.6), name: "x_4", fill: black, radius: 0.05)
-    content("x.north", $X$, anchor: "south", padding: 0.1, name: "x_label")
+      line(name + "_x_label", name + "_y_label", mark: (end: "straight"), name: name + "_xy_arrow")
+      content(name + "_xy_arrow", $f$, anchor: "south", padding: 0.1)
+      for con in connections {
+        line(name + "_x_" + str(con.at(0)), name + "_y_" + str(con.at(1)), mark: (end: "straight"))
+      }
+      content(name + "_xy_arrow", label, anchor: "south", padding: 1)
+    }
 
-    circle((2, 0), radius: (0.5, 1), name: "y")
-    circle((2.1, 0.5), name: "y_0", fill: black, radius: 0.05)
-    circle((1.8, 0.2), name: "y_1", fill: black, radius: 0.05)
-    circle((2.2, -0.1), name: "y_2", fill: black, radius: 0.05)
-    circle((1.9, -0.4), name: "y_3", fill: black, radius: 0.05)
-    circle((2.1, -0.6), name: "y_4", fill: black, radius: 0.05)
-    content("y.north", $Y$, anchor: "south", padding: 0.1, name: "y_label")
-
-    line("x_label", "y_label", mark: (end: "straight"), name: "xy_arrow")
-    content("xy_arrow", $f$, anchor: "south", padding: 0.1)
-    line("x_0", "y_0", mark: (end: "straight"))
-    line("x_1", "y_0", mark: (end: "straight"))
-    line("x_2", "y_1", mark: (end: "straight"))
-    line("x_3", "y_1", mark: (end: "straight"))
-    line("x_4", "y_3", mark: (end: "straight"))
-    content("xy_arrow", [Abbildung], anchor: "south", padding: 1)
-    */
+    abbildung(name: "a")
+    abbildung(origin: (5, 0), connections: ((0, 0), (0, 2), (2, 3)), name: "b", label: [keine Abbildung])
   }),
   caption: [Abbildungen],
+)
+
+Die Menge $Gamma_f = {(x,y) in X crossmark Y | y = f(x)}$ heißt Graph von $f$.
+#figure(
+  cetz.canvas({
+    import cetz.draw: *
+    import cetz-plot: *
+    // TODO: fully migrate to cetz-plot, if possible
+    plot.plot(size: (2, 2), axis-style: none, {
+      plot.add(domain: (0, 2), calc.sin)
+    })
+    rect((0, 0), (2, 2))
+    line((0, -0.5), (2, -0.5))
+    line((-0.5, 0), (-0.5, 2))
+    content((-1.3, 1), $Y$)
+    content((1, -1.3), $X$)
+    circle((1, calc.sin(1) * 2), radius: 0.05, fill: black)
+    line((1, calc.sin(1) * 2), (1, -0.5), stroke: (dash: "dashed"))
+    line((1, calc.sin(1) * 2), (-0.5, calc.sin(1) * 2), stroke: (dash: "dashed"))
+    content((1, -0.7), $x$)
+    content((-0.9, calc.sin(1) * 2), $f(x)$)
+  }),
+  caption: [Graph von Abbildung $f$],
+)
+
+Eine Abbildung $f: X -> Y$ ist ein Tripel $(X, Y, Gamma)$, wobei $X,Y$ Mengen sind und $Gamma subset.eq X crossmark Y$ eine
+Teilemenge mit der folgenden Eigenschaft:
+$
+  forall x in X: exists ! y in Y: (x,y) in Gamma
+$
+
+=== Bemerkung
+Zwei Abbildungen $f: X -> Y, x |-> f(x)$ und $g: X' -> Y', x' |-> g(x')$ sind genau dann gleich, wenn $X=X'$, $Y=Y'$ und $f(x)=g(x)$
+für alle $x in X (=X')$.
+
+=== Beispiel
+#enum(
+  numbering: "(i)",
+  [
+    $op("id")_X: X -> X, x |-> x = op("id")_X (x)$ heißt Identität von $X$.
+    #figure(
+      cetz.canvas({
+        import cetz.draw: *
+        import cetz-plot: *
+        plot.plot(size: (2, 2), axis-style: "school-book", x-tick-step: none, y-tick-step: none, {
+          plot.add(domain: (-2, 2), x => x)
+        })
+      }),
+      caption: [Identitätsabbildung $op("id")_X$],
+    )
+  ],
+  [
+    $emptyset -> X$ ist eine Abbildung: Aber, falls $X != emptyset$, dann existiert keine Abbildung $X -> emptyset$.
+    Der Graph zu $emptyset -> X$ ist die leere Menge: $emptyset crossmark X = emptyset quad (emptyset, X, emptyset)$.
+  ],
+  [
+    $ZZ -> RR, n |-> n^2$ und $ZZ -> NN_0, n |-> n^2$ sind verschiedene Abbildungen.
+  ],
+  [
+    $NN -> RR, n |-> plus.minus sqrt(n)$ ist keine Abbildung \
+    $ZZ -> RR, n |-> sqrt(n)$ ist keine Abbildung
+  ],
+  [
+    $
+      f: RR -> RR, x |-> f(x) := cases(1 "falls" x in QQ, 0 "falls" x in.not QQ)
+    $
+    Allgemein: $N subset.eq RR$ Teilemenge,
+    $
+      op("char")_N: RR -> RR, x |-> cases(1 "falls" x in N, 0 "sonst")
+    $
+    #figure(
+      cetz.canvas({
+        import cetz.draw: *
+        import cetz-plot: *
+        plot.plot(size: (2, 2), axis-style: "school-book", x-tick-step: none, y-tick-step: 1, name: "plot", {
+          plot.add(domain: (-1, 4), x => if x >= 1 and x <= 3 { 1 } else { 0 })
+        })
+        content("plot.north", $Gamma_(op("char")_N)$)
+      }),
+      caption: [Abbildungsbeispiel $op("char")_N$],
+    )
+  ],
+)
+
+=== Definition
+Sei $f: X -> Y$ eine Abbildung, $A subset.eq X$ und $B subset.eq Y$ Teilmengen.
+#enum(
+  numbering: "(a)",
+  [
+    $
+      f(A) := & {y in Y | exists a in A: f(a) = y} \
+            = & {f(a) | a in A} subset.eq Y
+    $
+    #figure(
+      cetz.canvas({
+        import cetz.draw: *
+        import cetz-plot: *
+        plot.plot(
+          size: (2, 2),
+          axis-style: "scientific",
+          x-tick-step: none,
+          y-tick-step: none,
+          x-label: none,
+          y-label: none,
+          name: "plot",
+          {
+            // axis setup
+            plot.add-anchor("bl", (0, -1.5))
+            plot.add-anchor("br", (2 * calc.pi, -1.5))
+            plot.add-anchor("lt", (-0.5 * calc.pi, 1))
+            plot.add-anchor("lb", (-0.5 * calc.pi, -1))
+
+            plot.add(domain: (0, 2 * calc.pi), calc.sin, style: (stroke: blue.lighten(20%)))
+            plot.add(domain: (calc.pi * 0.75, calc.pi * 1.25), calc.sin, style: (
+              stroke: (paint: teal, thickness: 1.5pt),
+            ))
+            plot.add-anchor("A1", (calc.pi * 0.75, calc.sin(calc.pi * 0.75)))
+            plot.add-anchor("A1_x", (calc.pi * 0.75, -1.5))
+            plot.add-anchor("A1_y", (-0.5 * calc.pi, calc.sin(calc.pi * 0.75)))
+            plot.add-anchor("A2", (calc.pi * 1.25, calc.sin(calc.pi * 1.25)))
+            plot.add-anchor("A2_x", (calc.pi * 1.25, -1.5))
+            plot.add-anchor("A2_y", (-0.5 * calc.pi, calc.sin(calc.pi * 1.25)))
+          },
+        )
+        // axis
+        line("plot.bl", "plot.br")
+        line("plot.lt", "plot.lb")
+
+        line("plot.A1", "plot.A1_x", stroke: (dash: "dashed"))
+        line("plot.A2", "plot.A2_x", stroke: (dash: "dashed"))
+        line("plot.A1_x", "plot.A2_x", stroke: (thickness: 1.5pt), name: "line_x")
+        content("line_x.mid", $A$, anchor: "north", padding: 4pt)
+
+        line("plot.A1", "plot.A1_y", stroke: (dash: "dashed"))
+        line("plot.A2", "plot.A2_y", stroke: (dash: "dashed"))
+        line("plot.A1_y", "plot.A2_y", stroke: (thickness: 1.5pt), name: "line_y")
+        content("line_y.mid", $f(A)$, anchor: "east", padding: 4pt)
+
+        content("plot.br", $X$, anchor: "north", padding: 4pt)
+        content("plot.lt", $Y$, anchor: "east", padding: 4pt)
+      }),
+      caption: [Das Bild einer Abbildung],
+    )
+  ],
+  [
+    $
+      f^(-1)(B) := {x in X | f(x) in B}
+    $
+    #figure(
+      cetz.canvas({
+        import cetz.draw: *
+        import cetz-plot: *
+
+        let x_axis_x = -0.5 * calc.pi * 2
+        let y_axis_y = -1.5
+        let b1_y = calc.sin(0.15 * calc.pi)
+        let b2_y = calc.sin(0.3 * calc.pi)
+
+        plot.plot(
+          size: (2, 2),
+          axis-style: "scientific",
+          x-tick-step: none,
+          y-tick-step: none,
+          x-label: none,
+          y-label: none,
+          name: "plot",
+          {
+            // axis setup
+            plot.add-anchor("bl", (0, y_axis_y))
+            plot.add-anchor("br", (4 * calc.pi, y_axis_y))
+            plot.add-anchor("lt", (x_axis_x, 1))
+            plot.add-anchor("lb", (x_axis_x, -1))
+
+            plot.add(domain: (0, 4 * calc.pi), calc.sin, style: (stroke: blue.lighten(20%)))
+
+            for n in range(1, 3) {
+              // solutions of sin(x) = 0.15 * pi
+              // see: https://www.wolframalpha.com/input?i=sin%28x%29%3D0.15*pi
+              let b1_x = 6.28319 * (n - 1) + 0.490695
+              // solutions of sin(x) = 0.3 * pi
+              // see: https://www.wolframalpha.com/input?i=sin%28x%29%3D0.3*pi
+              let b2_x = 6.28319 * (n - 1) + 1.22997
+              plot.add-anchor("B1_" + str(n), (b1_x, b1_y))
+              plot.add-anchor("B1_x_" + str(n), (b1_x, y_axis_y))
+              plot.add-anchor("B1_y_" + str(n), (x_axis_x, b1_y))
+              plot.add-anchor("B2_" + str(n), (b2_x, b2_y))
+              plot.add-anchor("B2_x_" + str(n), (b2_x, y_axis_y))
+              plot.add-anchor("B2_y_" + str(n), (x_axis_x, b2_y))
+
+              plot.add(domain: (b1_x, b2_x), calc.sin, style: (
+                stroke: (paint: teal, thickness: 1.5pt),
+              ))
+            }
+          },
+        )
+
+        // axis
+        line("plot.bl", "plot.br", name: "line_x")
+        line("plot.lt", "plot.lb", name: "line_y")
+
+        for n in range(1, 3) {
+          line("plot.B1_" + str(n), "plot.B1_x_" + str(n), stroke: (dash: "dashed"))
+          line("plot.B2_" + str(n), "plot.B2_x_" + str(n), stroke: (dash: "dashed"))
+          line("plot.B1_x_" + str(n), "plot.B2_x_" + str(n), stroke: (thickness: 1.5pt))
+
+          line("plot.B1_" + str(n), "plot.B1_y_" + str(n), stroke: (dash: "dashed"))
+          line("plot.B2_" + str(n), "plot.B2_y_" + str(n), stroke: (dash: "dashed"))
+          line("plot.B1_y_" + str(n), "plot.B2_y_" + str(n), stroke: (thickness: 1.5pt))
+        }
+        content("line_x.mid", $f^(-1)(B)$, anchor: "north", padding: 4pt)
+        content("line_y.mid", $B$, anchor: "east", padding: 4pt)
+
+        content("plot.br", $X$, anchor: "north", padding: 4pt)
+        content("plot.lt", $Y$, anchor: "east", padding: 4pt)
+      }),
+      caption: [Das Urbild einer Abbildung],
+    )
+  ],
+  [
+    - $f|_A: A -> Y, a |-> f(x)$ heißt Einschränkung von $f$ auf/nach $A$.
+    - $Y supset.eq f(A)$ heißt Bild von $A$ unter $f$.
+    - $X supset.eq f^(-1)(B)$ heißt Urbild von $B$ unter $f$.
+    *Beispiel:*
+    $
+      f: RR -> RR, x |-> sin(x)
+    $
+    #figure(
+      cetz.canvas({
+        import cetz.draw: *
+        import cetz-plot: *
+        plot.plot(
+          size: (4, 2),
+          axis-style: "school-book",
+          x-tick-step: none,
+          y-tick-step: none,
+          y-min: -1,
+          y-max: 1,
+          y-ticks: (-1, 1),
+          x-label: none,
+          y-label: none,
+          plot.add(domain: (-2 * calc.pi, 2 * calc.pi), calc.sin),
+        )
+      }),
+      caption: [Beispiel für Bild und Urbild],
+    )
+    $
+            f(RR) & = [-1;1] := {x in RR | -1 <= x <= 1} \
+      f^(-1)({0}) & = {0, plus.minus pi, plus.minus 2 pi, ..., plus.minus k pi, ...}, quad k in ZZ
+    $
+  ],
+)
+
+=== Definition
+Sei $f: X -> Y$ eine Abbildung
+#enum(
+  numbering: "(i)",
+  [
+    $f$ heißt injektiv, falls: Für alle $x, x' in X$ mit $x != x'$ gilt $f(x) != f(x')$.
+    #enum(
+      numbering: (..nums) => $<=>$,
+      [
+        Für alle $x,x' in X$ gilt: $f(x)=f(x') => x=x'$
+      ],
+      [
+        Für alle $y in Y$ hat $f^(-1)({y})$ höchstens ein Element ($abs(f^(-1)({y})) <= 1$)
+      ],
+    )
+    Alternative schreibweise: $f: X arrow.hook Y$
+  ],
+  [
+    $f$ heißt surjektiv, falls $f(X) subset.eq Y$
+    #enum(
+      numbering: (..nums) => $<=>$,
+      [
+        Für alle $y in Y$ hat $f^(-1)({y})$ mindestens ein Element ($abs(f^(-1)({y})) >= 1$)
+      ],
+    )
+    Alternative schreibweise: $f: X arrow.twohead Y$
+  ],
+  [
+    $f$ heißt bijektiv, falls $f$ injektiv und surjektiv ist
+    #enum(
+      numbering: (..nums) => $<=>$,
+      [
+        Für alle $y in Y$ hat $f^(-1)({y})$ genau ein Element ($abs(f^(-1)({y})) = 1$)
+      ],
+    )
+    // twohead-hook-arrow workaround insipired by: https://tex.stackexchange.com/questions/296151/double-head-and-hook-arrow
+    Alternative schreibweise: $f: X arrow.hook #h(-3.3mm) arrow Y, f: X -> #place(bottom, dx: -4.8mm, dy: -0.5mm, scale(80%, $tilde.equiv$)) Y$
+  ],
+)
+
+*Beispiel:*
+#enum(
+  numbering: "(i)",
+  [
+    $
+      sin: RR -> RR
+    $
+    ist weder injektiv noch surjektiv
+  ],
+  [
+    $
+      sin: RR -> [-1; 1]
+    $
+    ist surjektiv, aber nicht injektiv
+  ],
+  [
+    $
+      sin: [frac(-pi, 2), frac(pi, 2)] -> [-1;1]
+    $
+    ist bijektiv (s. Analysis)
+  ],
+)
+
+=== Definition
+Seien $f: X -> Y$ und $g: Y -> Z$ Abbildungen.
+Dann heißt: $g compose f: X -> Z, x |-> (g compose f)(x) := g(f(x))$ die Komposition (Verknüpfung) von $f$ und $g$.
+
+=== Bemerkung
+$compose$ ist assoziativ. Ist $h: Z -> A$ eine weitere Abbildung, so gilt $h compose (g compose f) = (h compose g) compose f$.
+// TODO: plot
+Denn für alle $x in X$ gilt:
+$
+  (h compose (g compose f))(x) & = h((g compose f)(x)) \
+                               & = h(g(f(x))) \
+                               & = (h compose g)(f(x)) \
+                               & = ((h compose g) compose f)(x)
+$
+
+=== Beispiel
+#enum(
+  numbering: "(i)",
+  [
+    Ist $f: X -> Y$ eine Abbildung, so gilt $f compose op("id")_X = f = op("id")_Y compose f: X -> Y$
+  ],
+  [
+    $
+      f: RR -> RR, x |-> sin(x)-1 & quad g: RR -> RR, x |-> x^2 \
+                 (f compose g)(x) & = sin(x^2)-1 \
+                 (g compose f)(x) & = (sin(x)-1)^2
+    $
+    Im Allgemeinen gilt: $f compose g != g compose f$
+  ],
+)
+
+=== Satz
+Für eine Abbildung $f: X -> Y$ sind äquivalent:
+#enum(
+  numbering: "(a)",
+  [
+    $f$ ist bijektiv
+  ],
+  [
+    Es existiert eine Abbildung $g: Y -> X$ derart, dass $g compose f = op("id")_X: X -> X$ und
+    $f compose g = op("id")_Y: Y -> Y$
+  ],
 )
