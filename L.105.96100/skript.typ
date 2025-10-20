@@ -23,8 +23,8 @@
 Eine Menge ist eine (gedankliche) Zusammenfassung wohlunterschiedener Objekte, gennant Elemente der Menge.
 
 - Ist $M$ eine Menge, so gilt für jedes Objekt $x$:
-  - entweder $x in M$ ("$x$ ist Element von $M$")
-  - oder $x in.not M$ ("$x$ ist nicht Element von $M$").
+- entweder $x in M$ ("$x$ ist Element von $M$")
+- oder $x in.not M$ ("$x$ ist nicht Element von $M$").
 
 === Beispiel (Beschreibung von Mengen)
 #enum(
@@ -296,29 +296,33 @@ $x |-> f(x)$. $x$ heißt Definitionsbereich und $Y$ Wertebereich von $f$.
       name: "",
       label: [Abbildung],
     ) = {
-      circle(origin, radius: (0.5, 1), name: name + "_x")
-      circle(vec2_add(origin, (0.1, 0.5)), name: name + "_x_0", fill: black, radius: 0.05)
-      circle(vec2_add(origin, (-0.2, 0.2)), name: name + "_x_1", fill: black, radius: 0.05)
-      circle(vec2_add(origin, (0.2, -0.1)), name: name + "_x_2", fill: black, radius: 0.05)
-      circle(vec2_add(origin, (-0.1, -0.4)), name: name + "_x_3", fill: black, radius: 0.05)
-      circle(vec2_add(origin, (0.1, -0.6)), name: name + "_x_4", fill: black, radius: 0.05)
-      content(name + "_x.north", $X$, anchor: "south", padding: 0.1, name: name + "_x_label")
+      let _name(label) = {
+        return name + "_" + label
+      }
+
+      circle(origin, radius: (0.5, 1), name: _name("x"))
+      circle(vec2_add(origin, (0.1, 0.5)), name: _name("x_0"), fill: black, radius: 0.05)
+      circle(vec2_add(origin, (-0.2, 0.2)), name: _name("x_1"), fill: black, radius: 0.05)
+      circle(vec2_add(origin, (0.2, -0.1)), name: _name("x_2"), fill: black, radius: 0.05)
+      circle(vec2_add(origin, (-0.1, -0.4)), name: _name("x_3"), fill: black, radius: 0.05)
+      circle(vec2_add(origin, (0.1, -0.6)), name: _name("x_4"), fill: black, radius: 0.05)
+      content(_name("x.north"), $X$, anchor: "south", padding: 0.1, name: _name("x_label"))
 
       let y_origin = vec2_add(origin, (2, 0))
-      circle(y_origin, radius: (0.5, 1), name: name + "_y")
-      circle(vec2_add(y_origin, (0.1, 0.5)), name: name + "_y_0", fill: black, radius: 0.05)
-      circle(vec2_add(y_origin, (-0.2, 0.2)), name: name + "_y_1", fill: black, radius: 0.05)
-      circle(vec2_add(y_origin, (0.2, -0.1)), name: name + "_y_2", fill: black, radius: 0.05)
-      circle(vec2_add(y_origin, (-0.1, -0.4)), name: name + "_y_3", fill: black, radius: 0.05)
-      circle(vec2_add(y_origin, (0.1, -0.6)), name: name + "_y_4", fill: black, radius: 0.05)
-      content(name + "_y.north", $Y$, anchor: "south", padding: 0.1, name: name + "_y_label")
+      circle(y_origin, radius: (0.5, 1), name: _name("y"))
+      circle(vec2_add(y_origin, (0.1, 0.5)), name: _name("y_0"), fill: black, radius: 0.05)
+      circle(vec2_add(y_origin, (-0.2, 0.2)), name: _name("y_1"), fill: black, radius: 0.05)
+      circle(vec2_add(y_origin, (0.2, -0.1)), name: _name("y_2"), fill: black, radius: 0.05)
+      circle(vec2_add(y_origin, (-0.1, -0.4)), name: _name("y_3"), fill: black, radius: 0.05)
+      circle(vec2_add(y_origin, (0.1, -0.6)), name: _name("y_4"), fill: black, radius: 0.05)
+      content(_name("y.north"), $Y$, anchor: "south", padding: 0.1, name: _name("y_label"))
 
-      line(name + "_x_label", name + "_y_label", mark: (end: "straight"), name: name + "_xy_arrow")
-      content(name + "_xy_arrow", $f$, anchor: "south", padding: 0.1)
+      line(_name("x_label"), _name("y_label"), mark: (end: "straight"), name: _name("xy_arrow"))
+      content(_name("xy_arrow"), $f$, anchor: "south", padding: 0.1)
       for con in connections {
-        line(name + "_x_" + str(con.at(0)), name + "_y_" + str(con.at(1)), mark: (end: "straight"))
+        line(_name("x_") + str(con.at(0)), _name("y_") + str(con.at(1)), mark: (end: "straight"))
       }
-      content(name + "_xy_arrow", label, anchor: "south", padding: 1)
+      content(_name("xy_arrow"), label, anchor: "south", padding: 1)
     }
 
     abbildung(name: "a")
