@@ -3,6 +3,7 @@
 
 #set text(lang: "de")
 #set heading(numbering: "1.")
+#set par(justify: true)
 
 #align(
   center,
@@ -10,7 +11,8 @@
     #text(17pt)[
       *Lineare Algebra für Informatik*
     ] \
-    L.105.96100
+    L.105.96100 \
+    *Vorlesungsskript*
   ],
 )
 
@@ -258,3 +260,5 @@ Seien $A,B,C$ Aussagen. Dann gilt
   $A <=> B <=> not A <=> not B$,
   $not (A => B) <=> A and not B$,
 )
+
+
